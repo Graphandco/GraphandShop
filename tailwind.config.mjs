@@ -11,6 +11,7 @@ export default {
 			colors: {
 				background: "hsl(var(--background))",
 				foreground: "hsl(var(--foreground))",
+				card: "hsl(var(--card))",
 				primary: {
 					DEFAULT: "hsl(var(--primary))",
 					foreground: "hsl(var(--primary-foreground))",
@@ -44,13 +45,13 @@ export default {
 				sm: "calc(var(--radius) - 4px)",
 			},
 			fontSize: {
-				"size-h1": ["var(--size-h1)", "1"],
-				"size-h2": ["var(--size-h2)", "1"],
-				"size-h3": ["var(--size-h3)", "1"],
-				"size-h4": ["var(--size-h4)", "1"],
-				"size-h5": "var(--size-h5)",
-				"size-h6": "var(--size-h6)",
-				"size-small": "var(--size-small)",
+				"size-h1": ["var(--h1)", "1"],
+				"size-h2": ["var(--h2)", "1"],
+				"size-h3": ["var(--h3)", "1"],
+				"size-h4": ["var(--h4)", "1"],
+				"size-h5": "var(--h5)",
+				"size-h6": "var(--h6)",
+				"size-small": "var(--small)",
 			},
 			fontFamily: {
 				title: ["var(--font-anton)", "sans-serif"],

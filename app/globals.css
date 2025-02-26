@@ -14,7 +14,7 @@ body {
 		--title-font: var(--font-anton);
 		/* unused */
 		--foreground: 0 0% 3.9%;
-		--card: 0 0% 100%;
+		--card: 215 35% 12%;
 		--card-foreground: 0 0% 3.9%;
 		--popover: 0 0% 100%;
 		--popover-foreground: 0 0% 3.9%;
@@ -36,6 +36,14 @@ body {
 		--chart-4: 43 74% 66%;
 		--chart-5: 27 87% 67%;
 		--radius: 0.5rem;
+		/* SIZES */
+		--h1: clamp(38px, 28px + 2vw, 50px);
+		--h2: clamp(2rem, 25px + 2vw, 3rem);
+		--h3: clamp(1.8rem, 20px + 2vw, 2.5rem);
+		--h4: clamp(1.6rem, 15px + 2vw, 2rem);
+		--h5: "1.4rem";
+		--h6: "1.3rem";
+		--small: "0.8rem";
 	}
 }
 

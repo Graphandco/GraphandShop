@@ -2,6 +2,7 @@ import { Open_Sans } from "next/font/google";
 import { Anton } from "next/font/google";
 import "./globals.css";
 import { ShopProvider } from "@/context/ShopContext";
+import { CategoryProvider } from "@/context/CategoryContext";
 import Header from "@/components/header/Header";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -25,13 +26,15 @@ export default function RootLayout({ children }) {
 		<html lang="en">
 			<body className={`${anton.variable} antialiased`}>
 				<ShopProvider>
-					<Header />
-					<main>{children}</main>
-					<Toaster
-						toastOptions={{
-							className: "bg-primary text-white",
-						}}
-					/>
+					<CategoryProvider>
+						<Header />
+						<main>{children}</main>
+						<Toaster
+							toastOptions={{
+								className: "bg-primary text-white",
+							}}
+						/>
+					</CategoryProvider>
 				</ShopProvider>
 			</body>
 		</html>
