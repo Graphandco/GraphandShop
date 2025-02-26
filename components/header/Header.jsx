@@ -19,6 +19,7 @@ const Header = () => {
 					<FaBasketShopping />
 				</Link>
 			)}
+			<Link href="/upload">Upload</Link>
 		</header>
 	);
 };
