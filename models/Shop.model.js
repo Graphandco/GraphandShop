@@ -7,6 +7,12 @@ const ShopSchema = new Schema({
 	},
 	tobuy: {
 		type: Boolean,
+		default: false, // Ajoute une valeur par défaut
+	},
+	category: {
+		type: Schema.Types.ObjectId,
+		ref: "Category", // Référence au modèle "Category"
+		// required: true,
 	},
 });
 

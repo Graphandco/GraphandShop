@@ -12,7 +12,7 @@ export default function EditTodo() {
 	// Fetch shop by ID
 	const fetchShop = async () => {
 		try {
-			const response = await fetch(`/api/Shop/${id}`);
+			const response = await fetch(`/api/shop/${id}`);
 			const data = await response.json();
 			setShop(data.shop);
 		} catch (error) {
@@ -27,7 +27,7 @@ export default function EditTodo() {
 			return;
 		}
 		try {
-			const response = await fetch("/api/Shop", {
+			const response = await fetch("/api/shop", {
 				method: "PUT",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ id, ...shop }),

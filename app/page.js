@@ -1,253 +1,71 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Plus, Trash2, Edit } from "lucide-react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useRouter } from "next/navigation";
+import { useShops } from "@/hooks/useShops";
+import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+
+import { Button } from "@/components/ui/button";
+import ShopList from "@/components/ShopList";
 
 export default function Home() {
-	const [todos, setTodos] = useState([]);
-	const [shops, setShops] = useState([]);
-	const [newTodo, setNewTodo] = useState({ title: "", description: "" });
-	const [newShop, setNewShop] = useState({ title: "" });
-	const router = useRouter();
+	const { addShop } = useShops();
 
-	// Fetch all todos
-	const fetchTodos = async () => {
-		try {
-			const response = await fetch("/api/Todo");
-			const data = await response.json();
-			setTodos(data.todos);
-		} catch (error) {
-			toast.error("Failed to fetch todos");
-		}
+	// Utilisation de react-hook-form
+	const {
+		register,
+		handleSubmit,
+		reset,
+		formState: { errors },
+	} = useForm();
+
+	// Fonction pour ajouter un shop
+	const onSubmit = (data) => {
+		addShop(data);
+		reset(); // Réinitialise le formulaire après soumission
 	};
-
-	// Fetch all shops
-	const fetchShops = async () => {
-		try {
-			const response = await fetch("/api/Shop");
-			const data = await response.json();
-			setShops(data.shops);
-		} catch (error) {
-			toast.error("Failed to fetch shops");
-		}
-	};
-
-	// Add a new todo
-	const addTodo = async () => {
-		if (!newTodo.title || !newTodo.description) {
-			toast.error("Title and description are required");
-			return;
-		}
-
-		try {
-			const response = await fetch("/api/Todo", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(newTodo),
-			});
-			const data = await response.json();
-			setTodos([...todos, data.todo]);
-			setNewTodo({ title: "", description: "" });
-			toast.success("Todo added successfully");
-		} catch (error) {
-			toast.error("Failed to add todo");
-		}
-	};
-
-	// Add a new shop
-	const addShop = async () => {
-		if (!newShop.title) {
-			toast.error("Title and description are required");
-			return;
-		}
-
-		try {
-			const response = await fetch("/api/Shop", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(newShop),
-			});
-			const data = await response.json();
-			setShops([...shops, data.shop]);
-			setNewShop({ title: "" });
-			toast.success("Shop added successfully");
-		} catch (error) {
-			toast.error("Failed to add shop");
-		}
-	};
-
-	// Delete a todo
-	const deleteTodo = async (id) => {
-		try {
-			await fetch(`/api/Todo?id=${id}`, { method: "DELETE" });
-			setTodos(todos.filter((todo) => todo._id !== id));
-			toast.success("Todo deleted successfully");
-		} catch (error) {
-			toast.error("Failed to delete todo");
-		}
-	};
-
-	// Delete a shop
-	const deleteShop = async (id) => {
-		try {
-			await fetch(`/api/Shop?id=${id}`, { method: "DELETE" });
-			setShops(shops.filter((shop) => shop._id !== id));
-			toast.success("Shop deleted successfully");
-		} catch (error) {
-			toast.error("Failed to delete shop");
-		}
-	};
-
-	// Redirect to edit page
-	const redirectToEditTodoPage = (id) => {
-		router.push(`/Todo/Edit/${id}`);
-	};
-	const redirectToEditShopPage = (id) => {
-		router.push(`/Shop/Edit/${id}`);
-	};
-
-	useEffect(() => {
-		fetchTodos();
-		fetchShops();
-	}, []);
 
 	return (
 		<>
-			{/* 
-    <div className="min-h-screen bg-gradient-to-r from-violet-400 to-purple-300 py-8 px-4 sm:px-6 lg:px-8">
-      <ToastContainer />
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8">Todo List</h1>
-
-        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-          <h2 className="text-xl font-semibold mb-4">Add New Todo</h2>
-          <div className="space-y-4">
-            <input
-              type="text"
-              placeholder="Title"
-              value={newTodo.title}
-              onChange={(e) => setNewTodo({ ...newTodo, title: e.target.value })}
-              className="w-full p-2 border rounded-lg"
-            />
-            <input
-              type="text"
-              placeholder="Description"
-              value={newTodo.description}
-              onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
-              className="w-full p-2 border rounded-lg"
-            />
-            <button
-              onClick={addTodo}
-              className="w-full bg-gradient-to-r from-cyan-400 to-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 flex items-center justify-center"
-            >
-              <Plus size={18} className="mr-2" />
-              Add Todo
-            </button>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          {todos.map((todo) => (
-            <div
-              key={todo._id}
-              className="bg-white p-4 rounded-lg shadow-md flex items-center justify-between"
-            >
-              <div>
-                <h3 className="text-lg font-semibold">{todo.title}</h3>
-                <p className="text-gray-600">{todo.description}</p>
-              </div>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => redirectToEditTodoPage(todo._id)}
-                  className="p-2 text-blue-500 hover:bg-blue-100 rounded-lg"
-                >
-                  <Edit size={18} />
-                </button>
-                <button
-                  onClick={() => deleteTodo(todo._id)}
-                  className="p-2 text-red-500 hover:bg-red-100 rounded-lg"
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div> 
-    */}
-			<div className="min-h-screen bg-gradient-to-r from-violet-400 to-purple-300 py-8 px-4 sm:px-6 lg:px-8">
-				<ToastContainer />
+			<div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
 				<div className="max-w-3xl mx-auto">
-					<h1 className="text-3xl font-bold text-center mb-8">
+					<h1 className="text-3xl text-center mb-8 text-primary font-title">
 						Shop List
 					</h1>
 
-					{/* Add Todo Form */}
-					<div className="bg-white p-6 rounded-lg shadow-md mb-8">
-						<h2 className="text-xl font-semibold mb-4">
-							Add New Shop
-						</h2>
-						<div className="space-y-4">
-							<input
-								type="text"
-								placeholder="Title"
-								value={newShop.title}
-								onChange={(e) =>
-									setNewShop({
-										...newShop,
-										title: e.target.value,
-									})
-								}
-								className="w-full p-2 border rounded-lg"
-							/>
+					<Button variant="outline">+</Button>
 
-							<button
-								onClick={addShop}
-								className="w-full bg-gradient-to-r from-cyan-400 to-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 flex items-center justify-center"
-							>
-								<Plus size={18} className="mr-2" />
-								Add Shop
-							</button>
-						</div>
+					{/* Add Todo Form */}
+					<div className=" p-6 d mb-8">
+						<h2 className="text-xl font-semibold mb-4">
+							Ajouter un nouvel élément
+						</h2>
+						<form onSubmit={handleSubmit(onSubmit)}>
+							<div className="space-y-4">
+								<Input
+									type="text"
+									placeholder="Nom du produit"
+									{...register("title", {
+										required: "Le titre est requis",
+									})}
+								/>
+								{errors.title && (
+									<p className="text-red-500 text-sm">
+										{errors.title.message}
+									</p>
+								)}
+
+								<Button type="submit">
+									<FaPlus />
+									<span className="font-bold ">
+										Ajouter le produit
+									</span>
+								</Button>
+							</div>
+						</form>
 					</div>
 
 					{/* Todo List */}
-					<div className="space-y-4">
-						{shops.map((shop) => (
-							<div
-								key={shop._id}
-								className="bg-white p-4 rounded-lg shadow-md flex items-center justify-between"
-							>
-								<div>
-									<h3 className="text-lg font-semibold">
-										{shop.title}
-									</h3>
-									<p className="text-gray-600">
-										{shop.description}
-									</p>
-								</div>
-								<div className="flex space-x-2">
-									<button
-										onClick={() =>
-											redirectToEditShopPage(shop._id)
-										}
-										className="p-2 text-blue-500 hover:bg-blue-100 rounded-lg"
-									>
-										<Edit size={18} />
-									</button>
-									<button
-										onClick={() => deleteShop(shop._id)}
-										className="p-2 text-red-500 hover:bg-red-100 rounded-lg"
-									>
-										<Trash2 size={18} />
-									</button>
-								</div>
-							</div>
-						))}
-					</div>
+					<ShopList />
 				</div>
 			</div>
 		</>
