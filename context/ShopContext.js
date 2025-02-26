@@ -1,30 +1,29 @@
 "use client";
+
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 const ShopContext = createContext();
 
 export function ShopProvider({ children }) {
 	const [shops, setShops] = useState([]);
-	const router = useRouter(); // ✅ Utilisé pour revalider la page
 
-	// Charger les shops au montage
+	// ✅ Charger les shops dès le montage
+	const fetchShops = async () => {
+		try {
+			const response = await fetch("/api/shop", { cache: "no-store" });
+			const data = await response.json();
+			setShops(data.shops);
+		} catch (error) {
+			console.error("Erreur de chargement des shops:", error);
+		}
+	};
+
 	useEffect(() => {
-		const fetchShops = async () => {
-			try {
-				const response = await fetch("/api/shop");
-				const data = await response.json();
-				setShops(data.shops);
-			} catch (error) {
-				console.error("Erreur de chargement des shops:", error);
-			}
-		};
-
 		fetchShops();
 	}, []);
 
-	// Ajouter un nouveau shop
+	// ✅ Ajouter un nouveau shop
 	const addShop = async (newShop) => {
 		if (!newShop.title) {
 			toast.warning("Le titre est requis.");
@@ -38,17 +37,24 @@ export function ShopProvider({ children }) {
 				body: JSON.stringify(newShop),
 			});
 
-			const data = await response.json();
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error || "Erreur lors de l'ajout");
+			}
 
-			// Mettre à jour l'état avec le nouveau shop
-			setShops((prevShops) => [...prevShops, data.shop]);
+			const result = await response.json();
+
+			// ✅ Met à jour immédiatement la liste
+			setShops((prevShops) => [...prevShops, result.shop]);
+
 			toast.success("Shop ajouté avec succès !");
+			fetchShops(); // ✅ Recharge les shops pour assurer la mise à jour
 		} catch (error) {
-			toast.error("Échec de l'ajout du shop.");
+			toast.error(error.message || "Échec de l'ajout du shop.");
 		}
 	};
 
-	// ✅ Fonction pour supprimer un shop
+	// ✅ Supprimer un shop
 	const deleteShop = async (id) => {
 		try {
 			const response = await fetch(`/api/shop?id=${id}`, {
@@ -60,28 +66,25 @@ export function ShopProvider({ children }) {
 				throw new Error(errorData.error || "Échec de la suppression");
 			}
 
-			// Mettre à jour la liste localement
+			// ✅ Met à jour immédiatement la liste sans le shop supprimé
 			setShops((prevShops) =>
 				prevShops.filter((shop) => shop._id !== id)
 			);
 
-			// ✅ Forcer le rechargement des données
-			router.refresh();
-
 			toast.success("Shop supprimé avec succès !");
+			fetchShops(); // ✅ Recharge les shops pour s'assurer que tout est à jour
 		} catch (error) {
 			toast.error(error.message || "Échec de la suppression");
 		}
 	};
 
 	return (
-		<ShopContext.Provider value={{ shops, setShops, addShop, deleteShop }}>
+		<ShopContext.Provider value={{ shops, addShop, deleteShop }}>
 			{children}
 		</ShopContext.Provider>
 	);
 }
 
-// ✅ Exportation par défaut du contexte
 export default ShopContext;
 
 // ✅ Fonction pour utiliser le contexte

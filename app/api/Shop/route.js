@@ -30,6 +30,8 @@ export async function POST(request) {
 			category: existingCategory._id, // Stocker l'ObjectId
 		});
 
+		revalidatePath("/");
+
 		return NextResponse.json({
 			message: "Shop created successfully",
 			shop,

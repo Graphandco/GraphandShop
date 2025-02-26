@@ -1,13 +1,26 @@
 "use client";
 import { useShops } from "@/hooks/useShops";
-import { FaPlus } from "react-icons/fa";
-import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { useCategories } from "@/hooks/useCategories";
+import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
+// UI
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { FaPlus } from "react-icons/fa";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 
 export default function AddShop() {
 	const { addShop } = useShops();
+	const { categories, addCategory } = useCategories();
+	console.log(categories);
+
 	const router = useRouter();
 
 	// Utilisation de react-hook-form
@@ -15,6 +28,7 @@ export default function AddShop() {
 		register,
 		handleSubmit,
 		reset,
+		control,
 		formState: { errors },
 	} = useForm();
 
@@ -47,6 +61,41 @@ export default function AddShop() {
 								{errors.title && (
 									<p className="text-red-500 text-sm">
 										{errors.title.message}
+									</p>
+								)}
+
+								<Controller
+									name="category"
+									control={control}
+									rules={{
+										required: "La catégorie est requise",
+									}}
+									render={({ field }) => (
+										<Select
+											onValueChange={field.onChange}
+											value={field.value}
+										>
+											<SelectTrigger className="w-[180px]">
+												<SelectValue placeholder="Catégorie" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectGroup>
+													{categories.map((cat) => (
+														<SelectItem
+															key={cat._id}
+															value={cat.name}
+														>
+															{cat.name}
+														</SelectItem>
+													))}
+												</SelectGroup>
+											</SelectContent>
+										</Select>
+									)}
+								/>
+								{errors.category && (
+									<p className="text-red-500 text-sm">
+										{errors.category.message}
 									</p>
 								)}
 

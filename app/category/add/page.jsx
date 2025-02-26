@@ -62,6 +62,7 @@ export default function AddCategory() {
 								)}
 								<div className="flex items-center gap-5">
 									<Button variant="outline">
+										<FaPlus />
 										<Link href="/" className="font-bold">
 											Retour à l'accueil
 										</Link>
