@@ -1,6 +1,8 @@
 "use client";
-
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { toast } from "sonner";
 
 export default function UploadPage() {
 	const [images, setImages] = useState([]);
@@ -27,7 +29,7 @@ export default function UploadPage() {
 	// Envoi du fichier au serveur
 	const handleUpload = async () => {
 		if (!selectedFile) {
-			alert("Veuillez sélectionner une image.");
+			toast.warning("Veuillez sélectionner une image");
 			return;
 		}
 
@@ -41,33 +43,64 @@ export default function UploadPage() {
 
 		const data = await response.json();
 		if (data.success) {
-			alert("Image uploadée avec succès !");
+			toast.success("Image uploadée avec succès !");
 			setImages((prev) => [...prev, data.imagePath]); // Mise à jour de la liste
 		} else {
-			alert("Échec de l'upload.");
+			toast.error("Échec de l'upload");
+		}
+	};
+
+	// Supprimer une image
+	const handleDeleteImage = async (imageName) => {
+		const response = await fetch(`/api/delete-image?image=${imageName}`, {
+			method: "DELETE",
+		});
+
+		const data = await response.json();
+		if (data.success) {
+			toast.success("Image supprimée !");
+			setImages((prev) => prev.filter((img) => img !== imageName));
+		} else {
+			toast.error("Échec de la suppression");
 		}
 	};
 
 	return (
-		<div className="p-6">
+		<div className="container">
 			<h1 className="text-2xl font-bold">Uploader une Image</h1>
-			<input type="file" onChange={handleFileChange} className="my-4" />
-			<button
-				onClick={handleUpload}
-				className="bg-blue-500 text-white px-4 py-2"
-			>
-				Upload
-			</button>
+			<div className="flex w-full max-w-sm items-center space-x-2">
+				<input
+					type="file"
+					placeholder="Sélectionnez l'image"
+					onChange={handleFileChange}
+				/>
+				<Button onClick={handleUpload}>Envoyer</Button>
+			</div>
 
 			<h2 className="text-xl font-bold mt-6">Images Uploadées</h2>
-			<div className="grid grid-cols-3 gap-4 mt-4">
-				{images.map((image, index) => (
-					<img
-						key={index}
-						src={`/images/items/${image}`}
-						alt="Uploaded"
-					/>
-				))}
+			<div className="grid grid-cols-4 gap-4 mt-4">
+				{images.map((image, index) => {
+					if (image === ".DS_Store") return null;
+					return (
+						<div key={index} className="flex flex-col items-center">
+							<Image
+								src={`/images/items/${image}`}
+								width={50}
+								height={50}
+								alt={image}
+								className="rounded-md border"
+							/>
+							<Button
+								variant="destructive"
+								size="sm"
+								className="mt-2"
+								onClick={() => handleDeleteImage(image)}
+							>
+								Supprimer
+							</Button>
+						</div>
+					);
+				})}
 			</div>
 		</div>
 	);

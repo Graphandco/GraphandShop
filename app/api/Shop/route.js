@@ -4,13 +4,18 @@ import Category from "@/models/Category.model";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
-// Create Shop
+// ✅ Lire les fichiers d'images dans /public/images/items
+import fs from "fs";
+import path from "path";
+
+// 📌 Ajouter un shop avec une image
 export async function POST(request) {
 	try {
 		const {
 			title,
 			tobuy = false,
 			category = "Divers",
+			image = "",
 		} = await request.json();
 
 		await connectDB();
@@ -23,37 +28,38 @@ export async function POST(request) {
 			existingCategory = await Category.create({ name: category });
 		}
 
-		// Créer le shop en associant la catégorie
+		// Créer le shop en associant l'image
 		const shop = await Shop.create({
 			title,
 			tobuy,
-			category: existingCategory._id, // Stocker l'ObjectId
+			category: existingCategory._id,
+			image, // ✅ Enregistrement de l'image
 		});
 
 		revalidatePath("/");
 
-		return NextResponse.json({
-			message: "Shop created successfully",
-			shop,
-		});
+		return NextResponse.json({ message: "Shop créé avec succès", shop });
 	} catch (error) {
 		return NextResponse.json({ error: error.message }, { status: 500 });
 	}
 }
 
-// Read all Shops
+// 📌 Lire les shops et leurs images
 export async function GET() {
 	try {
 		await connectDB();
-
-		// Récupérer les shops et inclure les détails de la catégorie associée
 		const shops = await Shop.find().populate("category").exec();
 
-		return NextResponse.json({ shops });
+		// ✅ Lire les images depuis le dossier
+		const imagesDir = path.join(process.cwd(), "public/images/items");
+		const images = fs.readdirSync(imagesDir);
+
+		return NextResponse.json({ shops, images });
 	} catch (error) {
 		return NextResponse.json({ error: error.message }, { status: 500 });
 	}
 }
+
 // Update Shop
 export async function PUT(request) {
 	const { id, title, tobuy } = await request.json();

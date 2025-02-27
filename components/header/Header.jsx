@@ -8,18 +8,21 @@ const Header = () => {
 	const pathname = usePathname();
 
 	return (
-		<header className="container p-5 mx-auto flex gap-3">
-			{pathname === "/" && (
-				<Link href="/inventaire">
-					<GiShop />
-				</Link>
-			)}
-			{pathname === "/inventaire" && (
-				<Link href="/">
-					<FaBasketShopping />
-				</Link>
-			)}
-			<Link href="/upload">Upload</Link>
+		<header className="bg-white text-background">
+			<div className="container p-5 mx-auto flex gap-3">
+				{pathname === "/" && (
+					<Link href="/inventaire">
+						<GiShop />
+					</Link>
+				)}
+				{pathname === "/inventaire" && (
+					<Link href="/">
+						<FaBasketShopping />
+					</Link>
+				)}
+				<Link href="/">Accueil</Link>
+				<Link href="/upload">Upload</Link>
+			</div>
 		</header>
 	);
 };

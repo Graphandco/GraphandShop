@@ -11,9 +11,10 @@ const ShopSchema = new Schema({
 	},
 	category: {
 		type: Schema.Types.ObjectId,
-		ref: "Category", // Référence au modèle "Category"
+		ref: "Category",
 		// required: true,
 	},
+	image: { type: String, default: "" },
 });
 
 const Shop = mongoose.models.Shop || mongoose.model("Shop", ShopSchema);
