@@ -7,9 +7,9 @@ const ShopContext = createContext();
 
 export function ShopProvider({ children }) {
 	const [shops, setShops] = useState([]);
-	const [images, setImages] = useState([]); // ✅ Stocke les images disponibles
+	const [images, setImages] = useState([]);
 
-	// ✅ Charger les shops et les images
+	// Charger les items et les images
 	const fetchShops = async () => {
 		try {
 			const response = await fetch("/api/shop", { cache: "no-store" });
@@ -25,7 +25,7 @@ export function ShopProvider({ children }) {
 		fetchShops();
 	}, []);
 
-	// ✅ Ajouter un shop avec image
+	// Ajouter un item avec image
 	const addShop = async (newShop) => {
 		try {
 			const response = await fetch("/api/shop", {
@@ -48,8 +48,32 @@ export function ShopProvider({ children }) {
 		}
 	};
 
+	// Supprimer un item
+	const deleteShop = async (id) => {
+		try {
+			const response = await fetch(`/api/shop?id=${id}`, {
+				method: "DELETE",
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error || "Échec de la suppression");
+			}
+
+			// ✅ Met à jour immédiatement la liste sans le shop supprimé
+			setShops((prevShops) =>
+				prevShops.filter((shop) => shop._id !== id)
+			);
+
+			toast.success("Shop supprimé avec succès !");
+			fetchShops(); // ✅ Recharge les shops pour s'assurer que tout est à jour
+		} catch (error) {
+			toast.error(error.message || "Échec de la suppression");
+		}
+	};
+
 	return (
-		<ShopContext.Provider value={{ shops, images, addShop }}>
+		<ShopContext.Provider value={{ shops, images, addShop, deleteShop }}>
 			{children}
 		</ShopContext.Provider>
 	);

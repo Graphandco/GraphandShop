@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
 
 export default function UploadPage() {
 	const [images, setImages] = useState([]);
@@ -78,7 +79,7 @@ export default function UploadPage() {
 			</div>
 
 			<h2 className="text-xl font-bold mt-6">Images Uploadées</h2>
-			<div className="grid grid-cols-4 gap-4 mt-4">
+			<div className="flex flex-wrap my-6">
 				{images.map((image, index) => {
 					if (image === ".DS_Store") return null;
 					return (
@@ -88,15 +89,15 @@ export default function UploadPage() {
 								width={50}
 								height={50}
 								alt={image}
-								className="rounded-md border"
+								className="p-1"
 							/>
+
 							<Button
-								variant="destructive"
-								size="sm"
+								size="icon"
 								className="mt-2"
 								onClick={() => handleDeleteImage(image)}
 							>
-								Supprimer
+								<Trash2 />
 							</Button>
 						</div>
 					);

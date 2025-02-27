@@ -14,6 +14,8 @@ export async function POST(request) {
 		const {
 			title,
 			tobuy = false,
+			incart = false,
+			favorite = false,
 			category = "Divers",
 			image = "",
 		} = await request.json();
@@ -32,6 +34,9 @@ export async function POST(request) {
 		const shop = await Shop.create({
 			title,
 			tobuy,
+			incart,
+			favorite,
+			favorite,
 			category: existingCategory._id,
 			image, // ✅ Enregistrement de l'image
 		});
@@ -66,7 +71,7 @@ export async function PUT(request) {
 	await connectDB();
 	const updatedShop = await Shop.findByIdAndUpdate(
 		id,
-		{ title, tobuy },
+		{ title, tobuy, incart, favorite },
 		{ new: true }
 	);
 	return NextResponse.json({

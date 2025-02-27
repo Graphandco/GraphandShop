@@ -5,9 +5,17 @@ const ShopSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	incart: {
+		type: Boolean,
+		default: false,
+	},
 	tobuy: {
 		type: Boolean,
-		default: false, // Ajoute une valeur par défaut
+		default: false,
+	},
+	favorite: {
+		type: Boolean,
+		default: false,
 	},
 	category: {
 		type: Schema.Types.ObjectId,

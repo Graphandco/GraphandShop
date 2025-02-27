@@ -10,7 +10,6 @@ export default function EditTodo() {
 	const [shop, setShop] = useState({ title: "" });
 	const router = useRouter();
 	const { id } = useParams();
-	console.log(id);
 	// Fetch shop by ID
 	const fetchShop = async () => {
 		try {
