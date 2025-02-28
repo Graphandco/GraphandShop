@@ -67,7 +67,7 @@ export default function UploadPage() {
 	};
 
 	return (
-		<div className="container">
+		<>
 			<h1 className="text-2xl font-bold">Uploader une Image</h1>
 			<div className="flex w-full max-w-sm items-center space-x-2">
 				<input
@@ -103,6 +103,6 @@ export default function UploadPage() {
 					);
 				})}
 			</div>
-		</div>
+		</>
 	);
 }

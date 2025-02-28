@@ -9,13 +9,13 @@ export function ShopProvider({ children }) {
 	const [shops, setShops] = useState([]);
 	const [images, setImages] = useState([]);
 
-	// Charger les items et les images
+	// Charger les shops et images
 	const fetchShops = async () => {
 		try {
 			const response = await fetch("/api/shop", { cache: "no-store" });
 			const data = await response.json();
 			setShops(data.shops);
-			setImages(data.images); // ✅ Charger les images disponibles
+			setImages(data.images);
 		} catch (error) {
 			console.error("Erreur de chargement des shops:", error);
 		}
@@ -25,7 +25,7 @@ export function ShopProvider({ children }) {
 		fetchShops();
 	}, []);
 
-	// Ajouter un item avec image
+	// Ajouter un shop
 	const addShop = async (newShop) => {
 		try {
 			const response = await fetch("/api/shop", {
@@ -48,7 +48,33 @@ export function ShopProvider({ children }) {
 		}
 	};
 
-	// Supprimer un item
+	// Editer un shop
+	const updateShop = async (id, updatedShop) => {
+		try {
+			const response = await fetch("/api/shop", {
+				method: "PUT",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ id, ...updatedShop }),
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error || "Échec de la mise à jour");
+			}
+
+			const result = await response.json();
+			setShops((prevShops) =>
+				prevShops.map((shop) => (shop._id === id ? result.shop : shop))
+			);
+
+			toast.success("Shop mis à jour avec succès !");
+			setTimeout(fetchShops, 500); // 🔄 Re-fetch différé
+		} catch (error) {
+			toast.error(error.message || "Échec de la mise à jour du shop.");
+		}
+	};
+
+	// Supprimer un shop
 	const deleteShop = async (id) => {
 		try {
 			const response = await fetch(`/api/shop?id=${id}`, {
@@ -60,20 +86,93 @@ export function ShopProvider({ children }) {
 				throw new Error(errorData.error || "Échec de la suppression");
 			}
 
-			// ✅ Met à jour immédiatement la liste sans le shop supprimé
 			setShops((prevShops) =>
 				prevShops.filter((shop) => shop._id !== id)
 			);
 
 			toast.success("Shop supprimé avec succès !");
-			fetchShops(); // ✅ Recharge les shops pour s'assurer que tout est à jour
+			fetchShops();
 		} catch (error) {
 			toast.error(error.message || "Échec de la suppression");
 		}
 	};
 
+	// ✅ Toggle incart avec mise à jour optimiste
+	const toggleInCart = async (id, currentValue) => {
+		setShops((prevShops) =>
+			prevShops.map((shop) =>
+				shop._id === id ? { ...shop, incart: !currentValue } : shop
+			)
+		);
+
+		try {
+			const response = await fetch("/api/shop", {
+				method: "PUT",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ id, incart: !currentValue }),
+			});
+
+			if (!response.ok) {
+				throw new Error("Échec de la mise à jour");
+			}
+
+			toast.success("Statut InCart mis à jour !");
+			setTimeout(fetchShops, 500);
+		} catch (error) {
+			// ❌ Rollback si erreur
+			setShops((prevShops) =>
+				prevShops.map((shop) =>
+					shop._id === id ? { ...shop, incart: currentValue } : shop
+				)
+			);
+			toast.error("Erreur lors de la mise à jour.");
+		}
+	};
+
+	// ✅ Toggle tobuy avec mise à jour optimiste
+	const toggleToBuy = async (id, currentValue) => {
+		setShops((prevShops) =>
+			prevShops.map((shop) =>
+				shop._id === id ? { ...shop, tobuy: !currentValue } : shop
+			)
+		);
+
+		try {
+			const response = await fetch("/api/shop", {
+				method: "PUT",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ id, tobuy: !currentValue }),
+			});
+
+			if (!response.ok) {
+				throw new Error("Échec de la mise à jour");
+			}
+
+			toast.success("Statut ToBuy mis à jour !");
+			setTimeout(fetchShops, 500);
+		} catch (error) {
+			// ❌ Rollback si erreur
+			setShops((prevShops) =>
+				prevShops.map((shop) =>
+					shop._id === id ? { ...shop, tobuy: currentValue } : shop
+				)
+			);
+			toast.error("Erreur lors de la mise à jour.");
+		}
+	};
+
 	return (
-		<ShopContext.Provider value={{ shops, images, addShop, deleteShop }}>
+		<ShopContext.Provider
+			value={{
+				shops,
+				images,
+				addShop,
+				updateShop,
+				deleteShop,
+				toggleInCart,
+				toggleToBuy,
+			}}
+		>
 			{children}
 		</ShopContext.Provider>
 	);

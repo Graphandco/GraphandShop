@@ -1,14 +1,21 @@
 import { Open_Sans } from "next/font/google";
 import { Anton } from "next/font/google";
+import { Lato } from "next/font/google";
 import "./globals.css";
 import { ShopProvider } from "@/context/ShopContext";
 import { CategoryProvider } from "@/context/CategoryContext";
 import Header from "@/components/header/Header";
 import { Toaster } from "@/components/ui/sonner";
+import BottomMenu from "@/components/BottomMenu";
 
 const open_Sans = Open_Sans({
 	variable: "--font-open-sans",
 	subsets: ["latin"],
+});
+const lato = Lato({
+	variable: "--font-lato",
+	subsets: ["latin"],
+	weight: "400",
 });
 const anton = Anton({
 	variable: "--font-anton",
@@ -28,7 +35,8 @@ export default function RootLayout({ children }) {
 				<ShopProvider>
 					<CategoryProvider>
 						<Header />
-						<main>{children}</main>
+						<main className="pb-20">{children}</main>
+						<BottomMenu />
 						<Toaster
 							toastOptions={{
 								className: "bg-primary text-white",

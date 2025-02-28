@@ -5,8 +5,8 @@ import Image from "next/image";
 import { Button } from "./ui/button";
 import Link from "next/link";
 
-const ShopItem = ({ shop }) => {
-	const { deleteShop } = useShops();
+const ShopItem = ({ shop, pageType, editMode }) => {
+	const { deleteShop, toggleInCart, toggleToBuy } = useShops();
 
 	let catColor;
 	switch (shop.category?.name) {
@@ -14,10 +14,13 @@ const ShopItem = ({ shop }) => {
 			catColor = "border-red-500";
 			break;
 		case "Boissons":
-			catColor = "border-blue-500";
+			catColor = "border-blue-400";
 			break;
 		case "Fruits & Légumes":
 			catColor = "border-green-500";
+			break;
+		case "Viande & Charcuterie":
+			catColor = "border-red-500";
 			break;
 		default:
 			catColor = "border-card";
@@ -25,7 +28,14 @@ const ShopItem = ({ shop }) => {
 
 	return (
 		<div
-			className={`border-2 ${catColor} p-4 flex flex-col justify-center gap-2 text-center rounded-lg relative`}
+			className={`border-2 ${catColor} p-4 flex flex-col justify-center gap-1 text-center rounded-lg relative ${
+				shop.tobuy && pageType === "inventaire" && "opacity-50"
+			}`}
+			onClick={() =>
+				pageType === "shoppingList"
+					? toggleInCart(shop._id, shop.incart)
+					: !shop.tobuy && toggleToBuy(shop._id, shop.tobuy)
+			}
 		>
 			{shop.image && (
 				<Image
@@ -37,29 +47,33 @@ const ShopItem = ({ shop }) => {
 					quality={75}
 				/>
 			)}
+			<div className="text-[.9rem]">{shop.title}</div>
 			{shop.favorite && (
 				<div className="absolute top-2 right-2">
 					<Heart size={14} className="text-primary fill-primary" />
 				</div>
 			)}
-			<div className="text-size-small">{shop.title}</div>
 			{/* <h3 className="text-size-small">
       {shop.category?.name}
    </h3> */}
-			<p className="text-gray-600">
-				{shop.tobuy ? "Inventaire" : "Liste"}
-			</p>
-
-			<div className="flex space-x-2">
-				<Button size="icon">
-					<Link href={`/shop/edit/${shop._id}`}>
-						<Pencil />
-					</Link>
-				</Button>
-				<Button size="icon" onClick={() => deleteShop(shop._id)}>
-					<Trash2 />
-				</Button>
-			</div>
+			{/* <p className="text-gray-600">
+				{shop.tobuy ? "Liste" : "Inventaire"}
+			</p> */}
+			{/* <p className="text-gray-600">
+				{shop.incart ? "Panier" : "Pas panier"}
+			</p> */}
+			{pageType === "inventaire" && editMode && (
+				<div className="flex justify-center gap-3">
+					<Button size="icon">
+						<Link href={`/shop/edit/${shop._id}`}>
+							<Pencil />
+						</Link>
+					</Button>
+					<Button size="icon" onClick={() => deleteShop(shop._id)}>
+						<Trash2 />
+					</Button>
+				</div>
+			)}
 		</div>
 	);
 };

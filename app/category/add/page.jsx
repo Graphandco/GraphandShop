@@ -33,51 +33,47 @@ export default function AddCategory() {
 
 	return (
 		<>
-			<div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
-				<div className="max-w-3xl mx-auto">
-					<div>
-						{categories?.map((category) => (
-							<div key={category._id}>{category.name}</div>
-						))}
-					</div>
-					<h1 className="text-3xl text-center mb-8 text-primary font-title">
-						Ajouter une catégorie
-					</h1>
+			<div>
+				{categories?.map((category) => (
+					<div key={category._id}>{category.name}</div>
+				))}
+			</div>
+			<h1 className="text-3xl text-center mb-8 text-primary font-title">
+				Ajouter une catégorie
+			</h1>
 
-					{/* Add Todo Form */}
-					<div className=" p-6 d mb-8">
-						<form onSubmit={handleSubmit(onSubmit)}>
-							<div className="space-y-4">
-								<Input
-									type="text"
-									placeholder="Nom de la catégorie"
-									{...register("name", {
-										required: "Le titre est requis",
-									})}
-								/>
-								{errors.name && (
-									<p className="text-red-500 text-sm">
-										{errors.name.message}
-									</p>
-								)}
-								<div className="flex items-center gap-5">
-									<Button variant="outline">
-										<FaPlus />
-										<Link href="/" className="font-bold">
-											Retour à l'accueil
-										</Link>
-									</Button>
-									<Button type="submit">
-										<FaPlus />
-										<span className="font-bold ">
-											Ajouter la catégorie
-										</span>
-									</Button>
-								</div>
-							</div>
-						</form>
+			{/* Add Todo Form */}
+			<div className=" p-6 d mb-8">
+				<form onSubmit={handleSubmit(onSubmit)}>
+					<div className="space-y-4">
+						<Input
+							type="text"
+							placeholder="Nom de la catégorie"
+							{...register("name", {
+								required: "Le titre est requis",
+							})}
+						/>
+						{errors.name && (
+							<p className="text-red-500 text-sm">
+								{errors.name.message}
+							</p>
+						)}
+						<div className="flex items-center gap-5">
+							<Button variant="outline">
+								<FaPlus />
+								<Link href="/" className="font-bold">
+									Retour à l'accueil
+								</Link>
+							</Button>
+							<Button type="submit">
+								<FaPlus />
+								<span className="font-bold ">
+									Ajouter la catégorie
+								</span>
+							</Button>
+						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 		</>
 	);

@@ -1,19 +1,9 @@
-"use client";
-import { useShops } from "@/hooks/useShops";
-
-import React from "react";
+import ShopList from "@/components/ShopList";
 
 const Inventaire = () => {
-	const { shops, setShops, loading, error } = useShops();
-	const inventaireShops = shops?.filter((shop) => shop.tobuy === false);
-
 	return (
 		<>
-			<div>
-				{inventaireShops?.map((shop) => (
-					<div key={shop._id}>{shop.title}</div>
-				))}
-			</div>
+			<ShopList pageType="inventaire" />
 		</>
 	);
 };

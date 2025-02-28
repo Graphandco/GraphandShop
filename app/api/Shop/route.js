@@ -64,20 +64,52 @@ export async function GET() {
 		return NextResponse.json({ error: error.message }, { status: 500 });
 	}
 }
-
-// Update Shop
+// Update
 export async function PUT(request) {
-	const { id, title, tobuy } = await request.json();
-	await connectDB();
-	const updatedShop = await Shop.findByIdAndUpdate(
-		id,
-		{ title, tobuy, incart, favorite },
-		{ new: true }
-	);
-	return NextResponse.json({
-		message: "Shop updated successfully",
-		shop: updatedShop,
-	});
+	try {
+		await connectDB();
+
+		// Vérification du body
+		const body = await request.json();
+		if (!body.id) {
+			return NextResponse.json(
+				{ error: "L'ID est requis" },
+				{ status: 400 }
+			);
+		}
+
+		const { id, ...updateFields } = body; // Sépare l'ID des autres champs
+
+		// Vérifie qu'il y a bien des champs à mettre à jour
+		if (Object.keys(updateFields).length === 0) {
+			return NextResponse.json(
+				{ error: "Aucun champ à mettre à jour" },
+				{ status: 400 }
+			);
+		}
+
+		// Met à jour uniquement les champs fournis
+		const updatedShop = await Shop.findByIdAndUpdate(id, updateFields, {
+			new: true,
+		});
+
+		if (!updatedShop) {
+			return NextResponse.json(
+				{ error: "Shop non trouvé" },
+				{ status: 404 }
+			);
+		}
+
+		return NextResponse.json({
+			message: "Shop mis à jour avec succès",
+			shop: updatedShop,
+		});
+	} catch (error) {
+		return NextResponse.json(
+			{ error: "Erreur serveur", details: error.message },
+			{ status: 500 }
+		);
+	}
 }
 
 // Delete Shop
