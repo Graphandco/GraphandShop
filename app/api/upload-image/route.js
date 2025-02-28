@@ -30,7 +30,7 @@ export async function POST(request) {
 		console.error("Erreur lors de l'upload :", error);
 		return NextResponse.json({
 			success: false,
-			message: "Erreur lors de l'upload",
+			message: `Erreur lors de l'upload : ${error}`,
 		});
 	}
 }
