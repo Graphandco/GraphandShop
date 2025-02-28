@@ -1,6 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import { Home, Warehouse, Images } from "lucide-react";
+import { Home, Warehouse, Images, Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -28,8 +28,13 @@ const BottomMenu = () => {
 		},
 		{
 			title: "Images",
-			href: "/upload",
+			href: "/gestion-images",
 			icon: <Images />,
+		},
+		{
+			title: "Ajouter",
+			href: "/shop/add",
+			icon: <Plus />,
 		},
 	];
 

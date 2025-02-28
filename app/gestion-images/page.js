@@ -1,11 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { toast } from "sonner";
-import { Trash2 } from "lucide-react";
+import ImagesList from "./ImagesList";
 
-export default function UploadPage() {
+export default function GestionImages() {
 	const [images, setImages] = useState([]);
 	const [selectedFile, setSelectedFile] = useState(null);
 
@@ -68,40 +67,31 @@ export default function UploadPage() {
 
 	return (
 		<>
-			<h1 className="text-2xl font-bold">Uploader une Image</h1>
-			<div className="flex w-full max-w-sm items-center space-x-2">
+			<h1 className="">Uploader une Image</h1>
+			<div className="flex w-full flex-wrap items-center gap-2">
 				<input
 					type="file"
 					placeholder="Sélectionnez l'image"
 					onChange={handleFileChange}
+					className="max-w-full"
 				/>
 				<Button onClick={handleUpload}>Envoyer</Button>
 			</div>
 
-			<h2 className="text-xl font-bold mt-6">Images Uploadées</h2>
-			<div className="flex flex-wrap my-6">
-				{images.map((image, index) => {
-					if (image === ".DS_Store") return null;
-					return (
-						<div key={index} className="flex flex-col items-center">
-							<Image
-								src={`/images/items/${image}`}
-								width={50}
-								height={50}
-								alt={image}
-								className="p-1"
+			<div className="bg-card p-5 rounded-lg mt-5">
+				<p className="font-bold">Images Uploadées</p>
+				<div className="grid grid-cols-[repeat(auto-fit,minmax(75px,1fr))] my-4">
+					{images.map((image, index) => {
+						if (image === ".DS_Store") return null;
+						return (
+							<ImagesList
+								key={index}
+								image={image}
+								handleDeleteImage={handleDeleteImage}
 							/>
-
-							<Button
-								size="icon"
-								className="mt-2"
-								onClick={() => handleDeleteImage(image)}
-							>
-								<Trash2 />
-							</Button>
-						</div>
-					);
-				})}
+						);
+					})}
+				</div>
 			</div>
 		</>
 	);

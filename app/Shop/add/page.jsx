@@ -57,11 +57,9 @@ export default function AddShop() {
 
 	return (
 		<>
-			<h1 className="text-3xl text-center mb-8 text-primary font-title">
-				Ajouter un produit
-			</h1>
+			<h1 className="">Ajouter un produit</h1>
 
-			<div className="p-6">
+			<div className="">
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className="space-y-4">
 						{/* Nom du produit */}

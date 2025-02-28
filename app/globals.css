@@ -67,6 +67,13 @@ main,
 	padding-inline: 25px;
 }
 
+h1 {
+	color: hsl(var(--primary));
+	font-family: var(--font-anton);
+	font-size: var(--h2);
+	margin-block: 2rem 1rem;
+}
+
 .lucide-chevron-down {
 	display: none;
 }
@@ -75,4 +82,8 @@ footer {
 	.wrapper {
 		padding-inline: 0;
 	}
+}
+.image-to-delete img,
+.image-to-delete .image-name {
+	opacity: 0.3;
 }
