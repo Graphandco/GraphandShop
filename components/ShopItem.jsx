@@ -50,7 +50,10 @@ const ShopItem = ({ shop, pageType, editMode }) => {
 			<div className="text-[.9rem]">{shop.title}</div>
 			{shop.favorite && (
 				<div className="absolute top-2 right-2">
-					<Heart size={14} className="text-primary fill-primary" />
+					<Heart
+						size={14}
+						className="text-primary fill-[#dd2525] text-[#dd2525]"
+					/>
 				</div>
 			)}
 			{/* <h3 className="text-size-small">

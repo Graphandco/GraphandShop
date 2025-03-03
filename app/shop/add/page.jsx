@@ -122,8 +122,8 @@ export default function AddShop() {
 							<span className="font-bold">Favori ?</span>
 							<Heart
 								onClick={handleFavorite}
-								className={`text-primary transition-all cursor-pointer ${
-									favorite && "fill-primary"
+								className={`text-[#dd2525] transition-all cursor-pointer ${
+									favorite && "fill-[#dd2525]"
 								}`}
 							/>
 						</div>
