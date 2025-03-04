@@ -4,10 +4,40 @@ import { Button } from "@/components/ui/button";
 import { useShops } from "@/hooks/useShops";
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 export default function Home() {
 	const { shops } = useShops();
 	const itemsToBuyCount = shops.filter((shop) => shop.tobuy).length;
+
+	const { status } = useSession();
+
+	const showSession = () => {
+		if (status === "authenticated") {
+			return (
+				<button
+					className="text-[#888] text-sm text-999 mt-7 transition duration-150 ease hover:text-white"
+					onClick={() => {
+						signOut();
+					}}
+				>
+					Logout here
+				</button>
+			);
+		} else if (status === "loading") {
+			return <span className="text-[#888] text-sm mt-7">Loading...</span>;
+		} else {
+			return (
+				<Link
+					href="/login"
+					className="text-[#888] text-sm text-999 mt-7 transition duration-150 ease hover:text-white"
+				>
+					Login here
+				</Link>
+			);
+		}
+	};
 
 	return (
 		<>
@@ -15,6 +45,7 @@ export default function Home() {
 				<h1 className="text-size-h3 text-center mb-8 text-white font-title">
 					Shop List
 				</h1>
+				{showSession()}
 				{itemsToBuyCount ? (
 					<ShopList pageType="shoppingList" />
 				) : (

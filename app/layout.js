@@ -7,6 +7,7 @@ import { CategoryProvider } from "@/context/CategoryContext";
 import Header from "@/components/header/Header";
 import { Toaster } from "@/components/ui/sonner";
 import BottomMenu from "@/components/BottomMenu";
+import { Provider } from "./provider";
 
 const open_Sans = Open_Sans({
 	variable: "--font-open-sans",
@@ -34,14 +35,16 @@ export default function RootLayout({ children }) {
 			<body className={`${anton.variable} antialiased`}>
 				<ShopProvider>
 					<CategoryProvider>
-						<Header />
-						<main className="pb-20">{children}</main>
-						<BottomMenu />
-						<Toaster
-							toastOptions={{
-								className: "bg-primary text-white",
-							}}
-						/>
+						<Provider>
+							<Header />
+							<main className="pb-20">{children}</main>
+							<BottomMenu />
+							<Toaster
+								toastOptions={{
+									className: "bg-primary text-white",
+								}}
+							/>
+						</Provider>
 					</CategoryProvider>
 				</ShopProvider>
 			</body>
