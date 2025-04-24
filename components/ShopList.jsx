@@ -12,12 +12,6 @@ const ShopList = ({ pageType }) => {
 	const { categories } = useCategories();
 	const [editMode, setEditMode] = useState(false);
 
-	const listingProducts =
-		pageType === "shoppingList"
-			? shops.filter((shop) => shop.tobuy && !shop.incart)
-			: shops;
-	const incartProducts = shops.filter((shop) => shop.tobuy && shop.incart);
-
 	return (
 		<>
 			<section className="shoplist mt-8">
